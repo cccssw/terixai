@@ -13,14 +13,14 @@ import game.TerixState;
  */
 public class TerixAi {
 
-    public int weightVerticalHole = -3;
-    public int weightHeight = -6;
-    public int weightHorizonalSingleHole = 0;
-    public int weightDeadHole = -5;
-    public int weightBoom = 1000;
-    public int weightDepth = 4;
-    public int weightFit = 2;
-    public int weightContinuous = 1;
+    public int weightVerticalHole = -50;
+    public int weightHeight = -50;
+    public int weightHorizonalSingleHole = -50;
+    public int weightDeadHole =-50;
+    public int weightBoom = 100;
+    public int weightDepth = 15;
+    public int weightFit = 5;
+    public int weightContinuous = 2;
     final Brick nextBrick;
 
     public TerixAi(Brick nextBrick) {

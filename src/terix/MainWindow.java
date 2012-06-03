@@ -35,7 +35,7 @@ public class MainWindow extends javax.swing.JFrame {
 
                 brickPanel1.updateImg(ts);
             }
-        }, 0, 100);
+        }, 0, 10);
 
     }
 
@@ -138,7 +138,7 @@ public class MainWindow extends javax.swing.JFrame {
                 System.out.println("next=" + next.type);
                 ts.setBrick(nexth);
             }
-        }, 500, 500);
+        }, 500, 50);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
