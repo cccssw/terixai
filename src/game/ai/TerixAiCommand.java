@@ -14,17 +14,18 @@ public class TerixAiCommand {
 
     public int x;
     public int r;
-    public int val;
+    public float val;
 
     public void applyTo(TerixState ts) {
         ts.rotate(r);
         ts.moveBrick(x, 0);
 
         ts.moveDownDirect();
-        ts.step();
+        ts.fusion();
+        ts.boom();
     }
 
-    public TerixAiCommand(int x, int r, int val) {
+    public TerixAiCommand(int x, int r, float val) {
         this.x = x;
         this.r = r;
         this.val = val;

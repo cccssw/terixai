@@ -128,6 +128,16 @@ public class Brick {
         align();
     }
 
+    int countRowPixel(int r) {
+        int count = 0;
+        for (int i = 0; i < Brick.WIDTH; ++i) {
+            if (data[r * Brick.WIDTH + i] == 1) {
+                ++count;
+            }
+        }
+        return count;
+    }
+
     public static Brick createBrick(int brickType) {
         switch (brickType) {
             case BRICK_I:

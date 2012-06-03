@@ -8,9 +8,16 @@ import game.Brick;
 import game.TerixState;
 import game.ai.TerixAi;
 import game.ai.TerixAiCommand;
+import game.ai.TerixAiConfig;
+import game.ai.TerixAiTester;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -124,21 +131,8 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_brickPanel1KeyPressed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-        ts.setBrick(Brick.createBrick(Brick.BRICK_T));
-        new Timer().schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-                Brick next = Brick.randomBrick();
-                Brick nexth = next.clone();
-                System.out.println("next=" + next.type);
-                TerixAiCommand tac = new TerixAi(next).findSteps(ts, false);
-                tac.applyTo(ts);
-                System.out.println("next=" + next.type);
-                ts.setBrick(nexth);
-            }
-        }, 500, 50);
+        TerixAiTester tai = new TerixAiTester("1.txt");
+        System.out.println("score=" + tai.test(new TerixAiConfig()));
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**

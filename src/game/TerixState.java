@@ -16,10 +16,10 @@ public class TerixState {
     Brick brick = null;
     int brickX;
     int brickY;
-    public int lastBoomCount;
-    public int lastBrickDepth;
-    public int lastFitVal;
-    public int lastContinuous;
+
+    public boolean isGameOver() {
+        return !checkRow(0, 0);
+    }
 
     public void copyState(TerixState ts) {
         if (ts.width != width || ts.height != height) {
@@ -52,9 +52,7 @@ public class TerixState {
     public boolean rotate(int n) {
         for (int i = 0; i < n; ++i) {
             if (!rotateRight()) {
-                System.out.println("rotate failed.");
                 return false;
-
             }
         }
         return true;
@@ -74,7 +72,6 @@ public class TerixState {
                 while (testBrick() == 3) {
                     --brickY;
                 }
-
             }
             if (result == 2) {
                 //right
@@ -159,9 +156,9 @@ public class TerixState {
         while (moveDown());
     }
 
-    boolean checkRow(int i) {
+    boolean checkRow(int i, int n) {
         for (int j = 0; j < width; ++j) {
-            if (data[i * width + j] == 0) {
+            if (data[i * width + j] != n) {
                 return false;
             }
         }
@@ -175,10 +172,10 @@ public class TerixState {
         }
     }
 
-    int boom() {
+    public int boom() {
         int count = 0;
         for (int i = height - 1; i >= 0; --i) {
-            if (checkRow(i)) {
+            if (checkRow(i, 1)) {
                 //boom
                 ++count;
                 for (int j = i; j > 0; --j) {
@@ -190,83 +187,14 @@ public class TerixState {
         return count;
     }
 
-    int calcFit() {
-        int fit = 0;
+    public void fusion() {
         for (int i = 0; i < Brick.HEIGHT; ++i) {
             for (int j = 0; j < Brick.WIDTH; ++j) {
                 if (brick.data[i * Brick.WIDTH + j] != 0) {
-                    if (get(j + brickX + 1, i + brickY) != 0) {
-                        ++fit;
-                    }
-                    if (get(j + brickX - 1, i + brickY) != 0) {
-                        ++fit;
-                    }
-                    if (get(j + brickX, i + brickY + 1) != 0) {
-                        ++fit;
-                    }
-                    if (get(j + brickX, i + brickY - 1) != 0) {
-                        ++fit;
-                    }
+                    set(j + brickX, i + brickY, 1);
                 }
             }
         }
-        return fit;
-    }
-
-    public boolean step() {
-        if (brick != null) {
-            //move brick
-            if (!moveDown()) {
-                lastBrickDepth = brickY + brick.getObjectHeight();
-                //fusion
-                lastFitVal = calcFit();
-                lastContinuous = countContinuous();
-                for (int i = 0; i < Brick.HEIGHT; ++i) {
-                    for (int j = 0; j < Brick.WIDTH; ++j) {
-                        if (brick.data[i * Brick.WIDTH + j] != 0) {
-                            set(j + brickX, i + brickY, 1);
-                        }
-                    }
-                }
-                //clear brick
-                setBrick(Brick.createBrick(Brick.BRICK_T));
-                if (testBrick() != 0) {
-                    return false;
-                }
-                //System.out.println("depth " + lastBrickDepth);
-            } else {
-                //System.out.println("auto move");
-            }
-        }
-        lastBoomCount = boom();
-        lastContinuous = lastBoomCount * width * width;
-        return true;
-    }
-
-    int countRowContinuous(int row) {
-        int blackContinuousCount = 0;
-        int sum = 0;
-        for (int i = 0; i <= this.getWidth(); ++i) {
-            if (this.get(i, row) == 1) {
-                //black
-                ++blackContinuousCount;
-            } else {
-                //white or wall
-                if (blackContinuousCount > 0) {
-                    sum += blackContinuousCount * blackContinuousCount;
-                    blackContinuousCount = 0;
-                }
-            }
-        }
-        return sum;
-    }
-    //optimize as 1
-
-    int countContinuous() {
-        int sum = 0;
-        for (int i = 0; i < this.getHeight(); ++i) {
-            sum += countRowContinuous(i);
-        }
-        return sum;
+        brick = null;
     }
 }
