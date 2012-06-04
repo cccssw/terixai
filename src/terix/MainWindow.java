@@ -4,22 +4,15 @@
  */
 package terix;
 
-import game.brick.Brick;
 import game.TerixState;
 import game.ai.TerixAi;
 import game.ai.TerixAiCommand;
-import game.ai.TerixAiConfig;
-import game.ai.TerixAiTester;
+import game.ai.TerixAiParam;
 import game.ai.pso.Vector;
+import game.brick.Brick;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.JOptionPane;
 
 /**
  *
@@ -32,7 +25,7 @@ public class MainWindow extends javax.swing.JFrame {
      */
     TerixState ts;
 
-    void initTerix() {
+    final void initTerix() {
         ts = new TerixState(10, 20);
         ts.setBrick(Brick.createBrick(Brick.BRICK_T));
     }
@@ -52,7 +45,7 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        brickPanel1 = new game.BrickPanel();
+        brickPanel1 = new game.graphics.BrickPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -147,7 +140,7 @@ public class MainWindow extends javax.swing.JFrame {
                 }
                 Brick next = Brick.randomBrick();
                 Brick nexth = next.clone();
-                TerixAiConfig taconf = new TerixAiConfig(new Vector(new float[]{0.93338245f, 0.78084093f, 0.46534258f, 0.42233616f, 0.9280521f, 0.5557991f,}));
+                TerixAiParam taconf = new TerixAiParam(new Vector(new float[]{0.8495455f, 0.11494613f, 0.7302942f, 0.14472693f, 0.33341503f}));
 
                 TerixAiCommand tac = new TerixAi(taconf, next).findSteps(ts);
                 tac.applyTo(ts);
@@ -158,7 +151,7 @@ public class MainWindow extends javax.swing.JFrame {
                 }
                 brickPanel1.updateImg(ts);
             }
-        }, 500, 500);
+        }, 500, 50);
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -217,13 +210,14 @@ public class MainWindow extends javax.swing.JFrame {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
 
+            @Override
             public void run() {
                 new MainWindow().setVisible(true);
             }
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private game.BrickPanel brickPanel1;
+    private game.graphics.BrickPanel brickPanel1;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     // End of variables declaration//GEN-END:variables

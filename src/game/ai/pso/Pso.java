@@ -33,12 +33,12 @@ public abstract class Pso {
     public Vector pso(int maxIteration, float criter) {
         Vector gBestPos = new Vector(dimision);
 
-        double pBestVal[] = new double[particleCount];
+        float pBestVal[] = new float[particleCount];
         ArrayList<Vector> pBestPos = new ArrayList<Vector>();
         ArrayList<Vector> v = new ArrayList<Vector>();
         ArrayList<Vector> particle = new ArrayList<Vector>();
 
-        double gBestVal = 0;
+        float gBestVal = 0;
 
 
         //init
@@ -61,7 +61,7 @@ public abstract class Pso {
         do {
             beforeIteration();
             for (int i = 0; i < particleCount; ++i) {
-                double fit = fitness(particle.get(i));
+                float fit = fitness(particle.get(i));
                 if (fit > pBestVal[i]) {
                     pBestVal[i] = fit;
                     pBestPos.get(i).assgin(particle.get(i));
@@ -71,7 +71,7 @@ public abstract class Pso {
                     gBestPos.assgin(pBestPos.get(i));
 
                     //check criter
-                    if (Math.abs(gBestVal - 1)< criter) {
+                    if (Math.abs(gBestVal - 1) < criter) {
                         maxIteration = 0;
                         break;
                     }
@@ -100,6 +100,7 @@ public abstract class Pso {
             }
         } while ((maxIteration-- > 0));
         System.out.println("gBestVal=" + gBestVal);
+        gBestPos.addtional = gBestVal;
         return gBestPos;
     }
 }

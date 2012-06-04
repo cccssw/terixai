@@ -8,7 +8,7 @@ package game.ai.pso;
  *
  * @author wssccc
  */
-public class psoMain {
+public class PsoMain {
 
     /**
      * @param args the command line arguments

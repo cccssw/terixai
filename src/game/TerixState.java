@@ -19,6 +19,18 @@ public class TerixState {
     int brickX;
     int brickY;
 
+    public int getBrickX() {
+        return brickX;
+    }
+
+    public Brick getBrick() {
+        return brick;
+    }
+
+    public int getBrickY() {
+        return brickY;
+    }
+
     public boolean isGameOver() {
         return !checkRow(0, 0);
     }

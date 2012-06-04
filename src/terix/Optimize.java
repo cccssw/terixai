@@ -4,7 +4,7 @@
  */
 package terix;
 
-import game.ai.TerixAiConfig;
+import game.ai.TerixAiParam;
 import game.ai.TerixAiTester;
 import game.ai.pso.Pso;
 import game.ai.pso.Vector;
@@ -26,10 +26,10 @@ public class Optimize {
 
         long t1 = System.currentTimeMillis();
         //final TerixAiTester tai = new TerixAiTester("1.txt");
-        int iterMax = 10;
+        int iterMax = 100;
         float criter = 0.01f;
-        int particles = 5;
-        final int testSize = 5000;
+        int particles = 100;
+        final int testSize = 10000;
 
         Pso pso = new Pso(particles, 5) {
 
@@ -37,7 +37,7 @@ public class Optimize {
 
             @Override
             public float fitness(Vector v) {
-                TerixAiConfig taconf = new TerixAiConfig(v);
+                TerixAiParam taconf = new TerixAiParam(v);
                 return tai.test(taconf);
             }
 
@@ -54,6 +54,7 @@ public class Optimize {
             p.println("criter=" + criter);
             p.println("particle size=" + particles);
             p.println("testSize=" + testSize);
+            p.println("gBestVal=" + v.addtional);
             p.println("optimized vector=" + v.toString());
             p.println("time=" + (System.currentTimeMillis() - t1));
             p.close();

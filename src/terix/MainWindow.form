@@ -45,7 +45,7 @@
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="game.BrickPanel" name="brickPanel1">
+    <Container class="game.graphics.BrickPanel" name="brickPanel1">
       <Events>
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="brickPanel1KeyPressed"/>
       </Events>

@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package game;
+package game.graphics;
 
-import game.brick.Brick;
 import game.TerixState;
+import game.brick.Brick;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -25,45 +25,45 @@ public class BrickPanel extends javax.swing.JPanel {
 
     public void updateImg(TerixState gs) {
 
-        int size1 = getWidth() / gs.width;
-        int size2 = getHeight() / gs.height;
+        int size1 = getWidth() / gs.getWidth();
+        int size2 = getHeight() / gs.getHeight();
         boxSize = size1 > size2 ? size2 : size1;
 
-        img = new BufferedImage(gs.width * boxSize, gs.height * boxSize, BufferedImage.TYPE_4BYTE_ABGR);
+        img = new BufferedImage(gs.getWidth() * boxSize, gs.getHeight() * boxSize, BufferedImage.TYPE_4BYTE_ABGR);
         Graphics g = img.getGraphics();
         g.setColor(Color.WHITE);
         g.fillRect(0, 0, img.getWidth(), img.getHeight());
         //draw solid bricks
-        for (int i = 0; i < gs.height; ++i) {
-            for (int j = 0; j < gs.width; ++j) {
-                int index = gs.data[i * gs.width + j];
+        for (int i = 0; i < gs.getHeight(); ++i) {
+            for (int j = 0; j < gs.getWidth(); ++j) {
+                int index = gs.get(j, i);
                 g.setColor(colorList[index]);
                 g.fillRect(j * boxSize, i * boxSize, boxSize, boxSize);
             }
         }
         //draw moving brick
-        if (gs.brick != null) {
-            int[] bdata = gs.brick.getData();
+        if (gs.getBrick() != null) {
+            int[] bdata = gs.getBrick().getData();
             assert bdata != null;
             for (int i = 0; i < Brick.HEIGHT; ++i) {
                 for (int j = 0; j < Brick.WIDTH; ++j) {
                     int index = bdata[i * Brick.WIDTH + j];
                     if (index != 0) {
                         g.setColor(Color.black);
-                        g.fillRect((j + gs.brickX) * boxSize, (i + gs.brickY) * boxSize, boxSize, boxSize);
+                        g.fillRect((j + gs.getBrickX()) * boxSize, (i + gs.getBrickY()) * boxSize, boxSize, boxSize);
                     }
                 }
             }
         }
         //draw lines
-        for (int i = 0; i < gs.width; ++i) {
+        for (int i = 0; i < gs.getWidth(); ++i) {
             g.setColor(Color.BLACK);
-            g.drawLine(i * boxSize, 0, i * boxSize, gs.height * boxSize);
+            g.drawLine(i * boxSize, 0, i * boxSize, gs.getHeight() * boxSize);
         }
 
-        for (int i = 0; i < gs.height; ++i) {
+        for (int i = 0; i < gs.getHeight(); ++i) {
             g.setColor(Color.BLACK);
-            g.drawLine(0, i * boxSize, gs.width * boxSize, i * boxSize);
+            g.drawLine(0, i * boxSize, gs.getWidth() * boxSize, i * boxSize);
         }
 
         this.repaint();

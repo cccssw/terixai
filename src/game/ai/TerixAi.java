@@ -4,9 +4,9 @@
  */
 package game.ai;
 
-import game.brick.Brick;
 import game.Evaluate;
 import game.TerixState;
+import game.brick.Brick;
 
 /**
  *
@@ -14,12 +14,12 @@ import game.TerixState;
  */
 public class TerixAi {
 
-    TerixAiConfig config;
+    TerixAiParam config;
     final Brick nextBrick;
     TerixState temp1;
     TerixState temp2;
 
-    public TerixAi(TerixAiConfig config, Brick nextBrick) {
+    public TerixAi(TerixAiParam config, Brick nextBrick) {
         this.config = config;
         this.nextBrick = nextBrick;
     }
@@ -32,26 +32,23 @@ public class TerixAi {
         score += e.evalBrickFit() * config.WEIGHT_FIT;
         ts.fusion();
         //before boom fit
-        score += e.evalFall() * config.WEIGHT_FALL;
+        //score += e.evalFall() * config.WEIGHT_FALL;
         score += e.evalContinuous() * config.WEIGHT_CONTINUOUS;
         int boom = ts.boom();
         //after boom fit
         score += boom * config.WEIGHT_BOOM;
         score += e.evalVHole() * config.WEIGHT_VHOLE;
+        score += e.evalHeight() * config.WEIGHT_HEIGHT;
         return score;
     }
 
     float findSteps2(TerixState ts) {
         float maxval = Float.NEGATIVE_INFINITY;
-        int maxx = 0;
-        int maxr = 0;
         float fitness;
 
         for (int x = -Brick.WIDTH; x < ts.getWidth(); ++x) {
             for (int r = 0; r < 4; ++r) {
-                fitness = 0;
                 temp2.copyState(ts);
-
                 if (temp2.rotate(r)) {
                     //rotate ok
                     if (temp2.moveBrick(x)) {
@@ -59,9 +56,6 @@ public class TerixAi {
                         fitness = eval(temp2);
 
                         if (fitness > maxval) {
-                            //save steps
-                            maxx = x;
-                            maxr = r;
                             maxval = fitness;
                         }
                     }
@@ -71,7 +65,6 @@ public class TerixAi {
 
         return maxval;
     }
-    //op
 
     public TerixAiCommand findSteps(TerixState ts) {
         temp1 = new TerixState(ts.getWidth(), ts.getHeight());
@@ -84,7 +77,6 @@ public class TerixAi {
 
         for (int x = -Brick.WIDTH; x < ts.getWidth(); ++x) {
             for (int r = 0; r < 4; ++r) {
-                fitness = 0;
                 temp1.copyState(ts);
 
                 if (temp1.rotate(r)) {

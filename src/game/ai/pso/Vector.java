@@ -12,6 +12,7 @@ import java.util.Random;
  */
 public class Vector {
 
+    public float addtional;
     float[] array;
     int dimision;
 

@@ -4,8 +4,8 @@
  */
 package game.ai;
 
-import game.brick.Brick;
 import game.TerixState;
+import game.brick.Brick;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Random;
@@ -42,11 +42,11 @@ public class TerixAiTester {
         }
     }
 
-    public float test(TerixAiConfig taconf) {
+    public float test(TerixAiParam taconf) {
         TerixState ts = new TerixState(10, 20);
         ts.setBrick(Brick.createBrick(testdata[0]));
         for (int i = 1; i < testdata.length; ++i) {
-            
+
             if (ts.isGameOver()) {
                 System.out.println("count=" + i);
                 return (float) i / testdata.length;
@@ -58,7 +58,7 @@ public class TerixAiTester {
             tac.applyTo(ts);
             ts.setBrick(nexth);
             if (i % 20 == 0) {
-               // ts.growUp(2);
+                // ts.growUp(2);
             }
         }
         System.out.println("eof");
