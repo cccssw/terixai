@@ -37,7 +37,6 @@ public class TerixAi {
         int boom = ts.boom();
         //after boom fit
         score += boom * config.WEIGHT_BOOM;
-        score += e.evalHeight() * config.WEIGHT_HEIGHT;
         score += e.evalVHole() * config.WEIGHT_VHOLE;
         return score;
     }

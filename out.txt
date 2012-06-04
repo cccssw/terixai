@@ -2,5 +2,5 @@ iterMax=10
 criter=0.01
 particle size=5
 testSize=5000
-optimized vector=Vector{1.3894727,-0.29346085,0.88571215,1.2439457,0.6117882,0.8193348,}
-time=183022
+optimized vector=Vector{1.3114257,0.48476484,4.5830536,2.5127244,3.0482676,}
+time=255335

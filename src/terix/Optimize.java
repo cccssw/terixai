@@ -31,7 +31,7 @@ public class Optimize {
         int particles = 5;
         final int testSize = 5000;
 
-        Pso pso = new Pso(particles, 6) {
+        Pso pso = new Pso(particles, 5) {
 
             TerixAiTester tai;
 
