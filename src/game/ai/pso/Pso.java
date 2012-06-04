@@ -6,8 +6,6 @@ package game.ai.pso;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -30,6 +28,8 @@ public abstract class Pso {
 
     public abstract float fitness(Vector v);
 
+    public abstract void beforeIteration();
+
     public Vector pso(int maxIteration, float criter) {
         Vector gBestPos = new Vector(dimision);
 
@@ -51,7 +51,7 @@ public abstract class Pso {
             particle.add(rdp);
             pBestPos.add(rdp);
 
-            pBestVal[i] = fitness(particle.get(i));
+            pBestVal[i] = Float.NEGATIVE_INFINITY;
             if (pBestVal[i] > gBestVal) {
                 gBestVal = pBestVal[i];
                 gBestPos.assgin(particle.get(i));
@@ -59,6 +59,7 @@ public abstract class Pso {
             v.add(vi);
         }
         do {
+            beforeIteration();
             for (int i = 0; i < particleCount; ++i) {
                 double fit = fitness(particle.get(i));
                 if (fit > pBestVal[i]) {
@@ -68,6 +69,12 @@ public abstract class Pso {
                 if (pBestVal[i] > gBestVal) {
                     gBestVal = pBestVal[i];
                     gBestPos.assgin(pBestPos.get(i));
+
+                    //check criter
+                    if (Math.abs(gBestVal - 1)< criter) {
+                        maxIteration = 0;
+                        break;
+                    }
                 }
             }
             //vol
@@ -91,7 +98,8 @@ public abstract class Pso {
 
                 particle.get(i).add(v.get(i));
             }
-        } while ((--maxIteration != 0) && Math.abs(gBestVal - 1) > criter);
+        } while ((maxIteration-- > 0));
+        System.out.println("gBestVal=" + gBestVal);
         return gBestPos;
     }
 }

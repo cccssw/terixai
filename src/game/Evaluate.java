@@ -4,6 +4,8 @@
  */
 package game;
 
+import game.brick.Brick;
+
 /**
  *
  * @author wssccc
@@ -14,6 +16,49 @@ public class Evaluate {
 
     public Evaluate(TerixState ts) {
         this.ts = ts;
+    }
+
+    int countColHeight(int x1) {
+        for (int i = 0; i < ts.height; ++i) {
+            if (ts.get(x1, i) != 0) {
+                return ts.height - i;
+            }
+        }
+        return 0;
+    }
+
+    int countFall() {
+
+        int count = 0;
+        int lastHeight = countColHeight(0);
+        for (int i = 1; i < ts.width; ++i) {
+            int curh = countColHeight(i);
+            if (Math.abs(curh - lastHeight) > 2) {
+                count += Math.abs(curh - lastHeight);
+            }
+            lastHeight = curh;
+        }
+        return count;
+    }
+
+    int countVerticalHole() {
+        boolean begin;
+        int count = 0;
+        for (int x = 0; x < ts.getWidth(); ++x) {
+            begin = false;
+            for (int y = 0; y < ts.getHeight(); ++y) {
+                int d = ts.get(x, y);
+                if (d == 0) {
+                    if (begin) {
+                        ++count;
+                        y = ts.getHeight();
+                    }
+                } else {
+                    begin = true;
+                }
+            }
+        }
+        return count;
     }
 
     int countRowContinuous(int row) {
@@ -53,10 +98,11 @@ public class Evaluate {
     }
 
     int countNearBlank() {
+        int[] bdata = ts.brick.getData();
         int nb = 0;
         for (int i = 0; i < Brick.HEIGHT; ++i) {
             for (int j = 0; j < Brick.WIDTH; ++j) {
-                if (ts.brick.data[i * Brick.WIDTH + j] != 0) {
+                if (bdata[i * Brick.WIDTH + j] != 0) {
                     if (ts.get(j + ts.brickX + 1, i + ts.brickY) == 0) {
                         ++nb;
                     }
@@ -86,8 +132,19 @@ public class Evaluate {
     }
 
     public float evalBrickFit() {
-        int ori = ts.brick.countRowPixel(0);
+        int ori = ts.brick.countTopPixel();
         int nb = countNearBlank();
         return 1.0f / (float) (nb - ori + 1);
+    }
+
+    public float evalVHole() {
+        int vc = countVerticalHole();
+        return 1.0f / (float) (vc + 1);
+    }
+
+    //TODO:
+    public float evalFall() {
+        int fall = countFall();
+        return 1.0f / (float) (fall + 1);
     }
 }

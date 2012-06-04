@@ -18,7 +18,7 @@ public class TerixAiCommand {
 
     public void applyTo(TerixState ts) {
         ts.rotate(r);
-        ts.moveBrick(x, 0);
+        ts.moveBrick(x);
 
         ts.moveDownDirect();
         ts.fusion();

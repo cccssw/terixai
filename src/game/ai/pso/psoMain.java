@@ -46,6 +46,11 @@ public class psoMain {
                 //System.out.println("fitness of " + v.toString() + "=" + fit);
                 return fit;
             }
+
+            @Override
+            public void beforeIteration() {
+                //throw new UnsupportedOperationException("Not supported yet.");
+            }
         };
         System.out.println("pso=" + pso.pso(100000, 0.00001f));
     }

@@ -4,6 +4,7 @@
  */
 package game;
 
+import game.brick.Brick;
 import game.TerixState;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -42,9 +43,11 @@ public class BrickPanel extends javax.swing.JPanel {
         }
         //draw moving brick
         if (gs.brick != null) {
+            int[] bdata = gs.brick.getData();
+            assert bdata != null;
             for (int i = 0; i < Brick.HEIGHT; ++i) {
                 for (int j = 0; j < Brick.WIDTH; ++j) {
-                    int index = gs.brick.data[i * Brick.WIDTH + j];
+                    int index = bdata[i * Brick.WIDTH + j];
                     if (index != 0) {
                         g.setColor(Color.black);
                         g.fillRect((j + gs.brickX) * boxSize, (i + gs.brickY) * boxSize, boxSize, boxSize);

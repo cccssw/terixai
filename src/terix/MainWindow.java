@@ -4,12 +4,13 @@
  */
 package terix;
 
-import game.Brick;
+import game.brick.Brick;
 import game.TerixState;
 import game.ai.TerixAi;
 import game.ai.TerixAiCommand;
 import game.ai.TerixAiConfig;
 import game.ai.TerixAiTester;
+import game.ai.pso.Vector;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,16 +35,6 @@ public class MainWindow extends javax.swing.JFrame {
     void initTerix() {
         ts = new TerixState(10, 20);
         ts.setBrick(Brick.createBrick(Brick.BRICK_T));
-        new Timer().schedule(new TimerTask() {
-
-            @Override
-            public void run() {
-                //ts.step();
-
-                brickPanel1.updateImg(ts);
-            }
-        }, 0, 10);
-
     }
 
     public MainWindow() {
@@ -63,6 +54,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         brickPanel1 = new game.BrickPanel();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -83,10 +75,17 @@ public class MainWindow extends javax.swing.JFrame {
             .addGap(0, 273, Short.MAX_VALUE)
         );
 
-        jButton1.setText("jButton1");
+        jButton1.setText("auto");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("play mode");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -95,15 +94,18 @@ public class MainWindow extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(brickPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton1)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(brickPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -131,14 +133,57 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_brickPanel1KeyPressed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        TerixAiTester tai = new TerixAiTester("1.txt");
-        System.out.println("score=" + tai.test(new TerixAiConfig()));
+        ts.setBrick(Brick.createBrick(Brick.BRICK_T));
+        new Timer().schedule(new TimerTask() {
+
+            int count = 0;
+
+            @Override
+            public void run() {
+
+                if (ts.isGameOver()) {
+                    System.out.println("Game over,count=" + count);
+                    this.cancel();
+                }
+                Brick next = Brick.randomBrick();
+                Brick nexth = next.clone();
+                TerixAiConfig taconf = new TerixAiConfig(new Vector(new float[]{0.93338245f, 0.78084093f, 0.46534258f, 0.42233616f, 0.9280521f, 0.5557991f,}));
+
+                TerixAiCommand tac = new TerixAi(taconf, next).findSteps(ts);
+                tac.applyTo(ts);
+                ts.setBrick(nexth);
+                ++count;
+                if (count % 20 == 0) {
+                    // ts.growUp(2);
+                }
+                brickPanel1.updateImg(ts);
+            }
+        }, 500, 500);
+
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        new Timer().schedule(new TimerTask() {
+
+            @Override
+            public void run() {
+
+                if (!ts.moveDown()) {
+                    ts.fusion();
+                    ts.boom();
+                    ts.setBrick(Brick.randomBrick());
+                }
+
+                brickPanel1.updateImg(ts);
+            }
+        }, 0, 1000);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void run() {
         /*
          * Set the Nimbus look and feel
          */
@@ -180,5 +225,6 @@ public class MainWindow extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private game.BrickPanel brickPanel1;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     // End of variables declaration//GEN-END:variables
 }

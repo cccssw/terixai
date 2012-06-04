@@ -4,7 +4,7 @@
  */
 package game.ai;
 
-import game.Brick;
+import game.brick.Brick;
 import game.Evaluate;
 import game.TerixState;
 
@@ -16,40 +16,86 @@ public class TerixAi {
 
     TerixAiConfig config;
     final Brick nextBrick;
+    TerixState temp1;
+    TerixState temp2;
 
     public TerixAi(TerixAiConfig config, Brick nextBrick) {
         this.config = config;
         this.nextBrick = nextBrick;
     }
 
-    //op
-    public TerixAiCommand findSteps(TerixState ts, boolean level2) {
+    float eval(TerixState ts) {
+        Evaluate e = new Evaluate(ts);
+        float score = 0;
+        ts.moveDownDirect();
+        //eval brick fit 
+        score += e.evalBrickFit() * config.WEIGHT_FIT;
+        ts.fusion();
+        //before boom fit
+        score += e.evalFall() * config.WEIGHT_FALL;
+        score += e.evalContinuous() * config.WEIGHT_CONTINUOUS;
+        int boom = ts.boom();
+        //after boom fit
+        score += boom * config.WEIGHT_BOOM;
+        score += e.evalHeight() * config.WEIGHT_HEIGHT;
+        score += e.evalVHole() * config.WEIGHT_VHOLE;
+        return score;
+    }
+
+    float findSteps2(TerixState ts) {
         float maxval = Float.NEGATIVE_INFINITY;
         int maxx = 0;
         int maxr = 0;
         float fitness;
-        TerixState nts = new TerixState(ts.getWidth(), ts.getHeight());
-        for (int x = 0; x < ts.getWidth(); ++x) {
+
+        for (int x = -Brick.WIDTH; x < ts.getWidth(); ++x) {
             for (int r = 0; r < 4; ++r) {
                 fitness = 0;
-                nts.copyState(ts);
-                Evaluate e = new Evaluate(nts);
-                if (nts.rotate(r)) {
+                temp2.copyState(ts);
+
+                if (temp2.rotate(r)) {
                     //rotate ok
-                    if (nts.moveBrick(x, 0)) {
+                    if (temp2.moveBrick(x)) {
                         //can be moved
-                        nts.moveDownDirect();
-                        //eval brick fit 
-                        fitness += e.evalBrickFit() * config.WEIGHT_FIT;
-                        nts.fusion();
-                        fitness += e.evalContinuous() * config.WEIGHT_CONTINUOUS;
-                        int boom = nts.boom();
-                        fitness += boom * config.WEIGHT_BOOM;
-                        fitness += e.evalHeight() * config.WEIGHT_HEIGHT;
-                        if (!level2) {
-                            nts.setBrick(nextBrick);
-                            fitness += findSteps(nts, true).val;
+                        fitness = eval(temp2);
+
+                        if (fitness > maxval) {
+                            //save steps
+                            maxx = x;
+                            maxr = r;
+                            maxval = fitness;
                         }
+                    }
+                }
+            }
+        }
+
+        return maxval;
+    }
+    //op
+
+    public TerixAiCommand findSteps(TerixState ts) {
+        temp1 = new TerixState(ts.getWidth(), ts.getHeight());
+        temp2 = new TerixState(ts.getWidth(), ts.getHeight());
+
+        float maxval = Float.NEGATIVE_INFINITY;
+        int maxx = 0;
+        int maxr = 0;
+        float fitness;
+
+        for (int x = -Brick.WIDTH; x < ts.getWidth(); ++x) {
+            for (int r = 0; r < 4; ++r) {
+                fitness = 0;
+                temp1.copyState(ts);
+
+                if (temp1.rotate(r)) {
+                    //rotate ok
+                    if (temp1.moveBrick(x)) {
+                        //can be moved
+                        fitness = eval(temp1);
+
+                        temp1.setBrick(nextBrick.clone());
+                        fitness += findSteps2(temp1);
 
                         if (fitness > maxval) {
                             //save steps

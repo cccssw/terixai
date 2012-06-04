@@ -15,6 +15,10 @@ public class Vector {
     float[] array;
     int dimision;
 
+    public float get(int i) {
+        return array[i];
+    }
+
     public Vector(int dimision) {
         this.dimision = dimision;
         array = new float[dimision];

@@ -6,7 +6,7 @@ using namespace std;
 
 int main()
 {
-    int count=300;
+    int count=2000;
     ofstream os("1.txt");
     os<<count<<endl;
     for(int i=0; i<count; ++i)

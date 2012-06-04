@@ -4,6 +4,8 @@
  */
 package game;
 
+import game.brick.Brick;
+
 /**
  *
  * @author wssccc
@@ -21,6 +23,23 @@ public class TerixState {
         return !checkRow(0, 0);
     }
 
+    public void growUp(int n) {
+        for (int n_i = 0; n_i < n; ++n_i) {
+            for (int i = 1; i < height; ++i) {
+                moveLine(i - 1, i);
+            }
+        }
+        int s;
+        for (int i = height - n; i < height; ++i) {
+            s = i % 2;
+            for (int j = 0; j < width; ++j) {
+
+                set(j, i, s);
+                s = 1 - s;
+            }
+        }
+    }
+
     public void copyState(TerixState ts) {
         if (ts.width != width || ts.height != height) {
             System.out.println("bad copy");
@@ -32,10 +51,7 @@ public class TerixState {
         }
         //
         if (ts.brick != null) {
-            if (this.brick == null) {
-                this.brick = Brick.randomBrick();
-            }
-            this.brick.copyData(ts.brick);
+            this.brick = ts.brick.clone();
         }
         this.brickX = ts.brickX;
         this.brickY = ts.brickY;
@@ -62,23 +78,12 @@ public class TerixState {
         if (this.brick != null) {
             brick.rotateRight();
             int result = testBrick();
-            if (result == 1) {
+            if (result != 0) {
                 //can't rotate here
                 brick.rotateLeft();
                 return false;
             }
-            if (result == 3) {
-                //up
-                while (testBrick() == 3) {
-                    --brickY;
-                }
-            }
-            if (result == 2) {
-                //right
-                while (testBrick() == 2) {
-                    --brickX;
-                }
-            }
+
             return true;
         }
         return false;
@@ -91,12 +96,6 @@ public class TerixState {
     }
 
     public int get(int x, int y) {
-        if (x == width) {
-            return 2;
-        }
-        if (y == height) {
-            return 3;
-        }
         if (x >= 0 && x < width && y >= 0 && y < height) {
             return data[x + y * width];
         }
@@ -116,9 +115,11 @@ public class TerixState {
     }
 
     int testBrick() {
+        int[] bdata = brick.getData();
+        assert bdata != null;
         for (int i = 0; i < Brick.HEIGHT; ++i) {
             for (int j = 0; j < Brick.WIDTH; ++j) {
-                int result = brick.data[i * Brick.WIDTH + j] * get(j + brickX, i + brickY);
+                int result = bdata[i * Brick.WIDTH + j] * get(j + brickX, i + brickY);
                 if (result != 0) {
                     return result;
                 }
@@ -127,7 +128,28 @@ public class TerixState {
         return 0;
     }
 
-    public boolean moveBrick(int x, int y) {
+    public boolean moveBrick(int x) {
+        int ox = brickX;
+        if (ox > x) {
+            for (int i = ox - 1; i >= x; --i) {
+                if (!moveBrick(i, brickY)) {
+                    brickX = ox;
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            for (int i = ox + 1; i <= x; ++i) {
+                if (!moveBrick(i, brickY)) {
+                    brickX = ox;
+                    return false;
+                }
+            }
+            return true;
+        }
+    }
+
+    boolean moveBrick(int x, int y) {
         int lx = brickX;
         int ly = brickY;
         brickX = x;
@@ -165,10 +187,10 @@ public class TerixState {
         return true;
     }
 
-    void moveLine(int a, int b) {
+    void moveLine(int dst, int src) {
         for (int i = 0; i < width; ++i) {
-            data[a * width + i] = data[b * width + i];
-            data[b * width + i] = 0;
+            data[dst * width + i] = data[src * width + i];
+            data[src * width + i] = 0;
         }
     }
 
@@ -188,9 +210,10 @@ public class TerixState {
     }
 
     public void fusion() {
+        int[] bdata = brick.getData();
         for (int i = 0; i < Brick.HEIGHT; ++i) {
             for (int j = 0; j < Brick.WIDTH; ++j) {
-                if (brick.data[i * Brick.WIDTH + j] != 0) {
+                if (bdata[i * Brick.WIDTH + j] != 0) {
                     set(j + brickX, i + brickY, 1);
                 }
             }
