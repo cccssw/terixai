@@ -42,6 +42,14 @@ public class TerixAiTester {
         }
     }
 
+    void applyTAC(TerixState ts, TerixAiCommand tac) {
+        ts.rotate(tac.r);
+        ts.moveBrick(tac.x);
+        ts.moveDownDirect();
+        ts.fusion();
+        ts.boom();
+    }
+
     public float test(TerixAiParam taconf) {
         TerixState ts = new TerixState(10, 20);
         ts.setBrick(Brick.createBrick(testdata[0]));
@@ -55,7 +63,7 @@ public class TerixAiTester {
             Brick next = Brick.createBrick(testdata[i]);
             Brick nexth = next.clone();
             TerixAiCommand tac = new TerixAi(taconf, next).findSteps(ts);
-            tac.applyTo(ts);
+            applyTAC(ts, tac);
             ts.setBrick(nexth);
             if (i % 20 == 0) {
                 // ts.growUp(2);

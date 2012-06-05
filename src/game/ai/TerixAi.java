@@ -19,6 +19,7 @@ public class TerixAi {
     TerixState temp1;
     TerixState temp2;
 
+    //TODO: TerixState as a member
     public TerixAi(TerixAiParam config, Brick nextBrick) {
         this.config = config;
         this.nextBrick = nextBrick;
@@ -66,9 +67,13 @@ public class TerixAi {
         return maxval;
     }
 
-    public TerixAiCommand findSteps(TerixState ts) {
+    void initTemp(TerixState ts) {
         temp1 = new TerixState(ts.getWidth(), ts.getHeight());
         temp2 = new TerixState(ts.getWidth(), ts.getHeight());
+    }
+
+    public TerixAiCommand findSteps(TerixState ts) {
+        initTemp(ts);
 
         float maxval = Float.NEGATIVE_INFINITY;
         int maxx = 0;

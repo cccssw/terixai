@@ -18,6 +18,12 @@ public class TerixState {
     Brick brick = null;
     int brickX;
     int brickY;
+    int score;
+    boolean cantSet = false;
+
+    public int getScore() {
+        return score;
+    }
 
     public int getBrickX() {
         return brickX;
@@ -32,7 +38,7 @@ public class TerixState {
     }
 
     public boolean isGameOver() {
-        return !checkRow(0, 0);
+        return !checkRow(0, 0) || cantSet;
     }
 
     public void growUp(int n) {
@@ -105,6 +111,9 @@ public class TerixState {
         this.brick = brick;
         this.brickX = (this.width - Brick.WIDTH) / 2;
         this.brickY = 0;
+        if (testBrick() != 0) {
+            cantSet = true;
+        }
     }
 
     public int get(int x, int y) {
@@ -161,7 +170,7 @@ public class TerixState {
         }
     }
 
-    boolean moveBrick(int x, int y) {
+    public boolean moveBrick(int x, int y) {
         int lx = brickX;
         int ly = brickY;
         brickX = x;
@@ -218,6 +227,7 @@ public class TerixState {
                 ++i;
             }
         }
+        score += (count * 100);
         return count;
     }
 

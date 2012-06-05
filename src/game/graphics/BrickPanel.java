@@ -8,7 +8,8 @@ import game.TerixState;
 import game.brick.Brick;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -16,23 +17,33 @@ import java.awt.image.BufferedImage;
  */
 public class BrickPanel extends javax.swing.JPanel {
 
-    public BufferedImage img;
-    int boxSize;
-    /**
-     * Creates new form BrickPanel
-     */
     Color[] colorList = new Color[]{Color.WHITE, Color.BLUE, Color.GRAY};
+    TerixState gs;
 
-    public void updateImg(TerixState gs) {
+    public void setTs(TerixState ts) {
+        this.gs = ts;
+    }
 
+    @Override
+    public void repaint() {
+        super.repaint();
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BrickPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    void draw(Graphics g) {
+        if (gs == null) {
+            return;
+        }
         int size1 = getWidth() / gs.getWidth();
         int size2 = getHeight() / gs.getHeight();
-        boxSize = size1 > size2 ? size2 : size1;
+        int boxSize = size1 > size2 ? size2 : size1;
 
-        img = new BufferedImage(gs.getWidth() * boxSize, gs.getHeight() * boxSize, BufferedImage.TYPE_4BYTE_ABGR);
-        Graphics g = img.getGraphics();
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, img.getWidth(), img.getHeight());
+        g.fillRect(0, 0, this.getWidth(), this.getHeight());
         //draw solid bricks
         for (int i = 0; i < gs.getHeight(); ++i) {
             for (int j = 0; j < gs.getWidth(); ++j) {
@@ -65,8 +76,6 @@ public class BrickPanel extends javax.swing.JPanel {
             g.setColor(Color.BLACK);
             g.drawLine(0, i * boxSize, gs.getWidth() * boxSize, i * boxSize);
         }
-
-        this.repaint();
     }
 
     public BrickPanel() {
@@ -74,9 +83,9 @@ public class BrickPanel extends javax.swing.JPanel {
     }
 
     @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        g.drawImage(img, 0, 0, this);
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        draw(g);
     }
 
     /**

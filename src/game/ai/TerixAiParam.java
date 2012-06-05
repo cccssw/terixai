@@ -17,6 +17,7 @@ public class TerixAiParam {
     public float WEIGHT_BOOM;
     public float WEIGHT_VHOLE;
     public float WEIGHT_HEIGHT;
+    public static final TerixAiParam DEFAULT_AI = new TerixAiParam(new Vector(new float[]{0.97367954f, 0.005630553f, 1.9036746f, 0.29107648f, 0.610011f}));
 
     public TerixAiParam() {
     }

@@ -4,8 +4,6 @@
  */
 package game.ai;
 
-import game.TerixState;
-
 /**
  *
  * @author wssccc
@@ -15,15 +13,6 @@ public class TerixAiCommand {
     public int x;
     public int r;
     public float val;
-
-    public void applyTo(TerixState ts) {
-        ts.rotate(r);
-        ts.moveBrick(x);
-
-        ts.moveDownDirect();
-        ts.fusion();
-        ts.boom();
-    }
 
     public TerixAiCommand(int x, int r, float val) {
         this.x = x;
